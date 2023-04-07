@@ -18,6 +18,7 @@ import train
 
 import option as op
 
+
 def Euler_Maruyama_sampler(score_model,
                            marginal_prob_std,
                            diffusion_coeff,
@@ -82,11 +83,10 @@ def Euler_Maruyama_sampler(score_model,
             g = diffusion_coeff(batch_time_step)  # (1,batchsize)
             f_i = drift.MatMulwithH(drift.USUt_list[num_steps - cnt + 1], degraded_y, sample_batch_size) - x
 
-            if cnt % 100 == 0:
-                f_i_list[cnt] = f_i
-                H_i_list[cnt] = -f_i
-                x_list[cnt] = x
-                print(f_i * step_size)
+            f_i_list[cnt] = f_i
+            H_i_list[cnt] = -f_i
+            x_list[cnt] = x
+            # print(f_i * step_size)
 
             h_i = -f_i
 

@@ -1,3 +1,5 @@
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
@@ -34,12 +36,73 @@ samples, orig_x, blur_x, degraded_y, f_i_list, x_list, H_i_list, mean_x1 = sampl
                                                                           num_steps = op.num_steps,
                                                                           device=op.device)
 
-
+print(type(f_i_list))
 
 ## Sample visualization.
 samples = samples.clamp(0.0, 1.0)  ##### clamp: 0과 1사이로 rescale 하는 함수인듯
 
 import matplotlib.pyplot as plt
+
+num = 6
+
+fig = plt.figure(figsize=(15,15))
+rows = 6; cols = 5
+
+for i in range(25):
+    grid = make_grid(x_list[i*20+1], nrow=int(np.sqrt(op.batch_size)))
+    ax1 = fig.add_subplot(rows, cols, i+1)
+    ax1.set_title('x_i_list ' + str(i*20+1))
+    ax1.axis('off')
+    ax1.imshow(grid.permute(1, 2, 0).cpu(), vmin=0., vmax=1.)
+grid = make_grid(samples, nrow=int(np.sqrt(op.batch_size)))
+ax1 = fig.add_subplot(rows, cols, 26)
+ax1.set_title('result image')
+ax1.axis('off')
+ax1.imshow(grid.permute(1, 2, 0).cpu(), vmin=0., vmax=1.)
+fig.tight_layout()
+plt.show()
+#code for plot f,h,and x grid
+"""
+
+for i in range(num+2):
+    
+    if i == 0:
+        grid = make_grid(orig_x, nrow=int(np.sqrt(op.sample_batch_size)))
+        ax1 = fig.add_subplot(rows, cols, i+1)
+        ax1.set_title('initial image')
+        ax1.axis('off')
+        ax1.imshow(grid.permute(1, 2, 0).cpu(), vmin=0., vmax=1.)
+    if i == 1:
+        grid = make_grid(samples, nrow=int(np.sqrt(op.batch_size)))
+        ax1 = fig.add_subplot(rows, cols, i+1)
+        ax1.set_title('result image')
+        ax1.axis('off')
+        ax1.imshow(grid.permute(1, 2, 0).cpu(), vmin=0., vmax=1.)
+    else:
+        index = i-2
+        if i == 0:
+            continue
+        grid = make_grid(f_i_list[450+(index*10)], nrow=int(np.sqrt(op.batch_size)))
+        ax1 = fig.add_subplot(rows, cols, 3*(i-1)+1)
+        ax1.set_title('f_i_list ' + str(450+(index*10)))
+        ax1.axis('off')
+        ax1.imshow(grid.permute(1, 2, 0).cpu(), vmin=0., vmax=1.)
+        grid2 = make_grid(H_i_list[450+(index*10)], nrow=int(np.sqrt(op.batch_size)))
+        ax2 = fig.add_subplot(rows, cols, 3*(i-1)+2)
+        ax2.set_title('H_i_list ' + str(450+(index*10)))
+        ax2.axis('off')
+        ax2.imshow(grid2.permute(1, 2, 0).cpu(), vmin=0., vmax=1.)
+        grid3 = make_grid(x_list[450+(index*10)], nrow=int(np.sqrt(op.batch_size)))
+        ax3 = fig.add_subplot(rows, cols, 3*(i-1)+3)
+        ax3.set_title('X_list ' + str(450+(index*10)))
+        ax3.axis('off')
+        ax3.imshow(grid3.permute(1, 2, 0).cpu(), vmin=0., vmax=1.)
+fig.tight_layout()
+plt.show()
+"""
+
+#code for plot every features
+"""
 
 sample_grid = make_grid(samples, nrow=int(np.sqrt(op.sample_batch_size)))
 
@@ -101,3 +164,5 @@ ax9.imshow(abs123.permute(1, 2, 0).cpu(), vmin=0., vmax=1.)
 
 fig.tight_layout()
 plt.show()
+
+"""
