@@ -24,8 +24,11 @@ import samplers
 
 # Sampling
 ## Load the pre-trained checkpoint from disk.
-ckpt = torch.load('checkpt.pth', map_location=op.device)
-train.score_model.load_state_dict(ckpt)
+#ckpt = torch.load('checkpt.pth', map_location=op.device)
+ckpt = torch.load(
+    os.path.join('pretrained', 'lsun', 'bedroom', 'checkpoint_150000.pth'),map_location=op.device
+)
+train.score_model.load_state_dict(ckpt[0], strict=True)
 
 ## Generate samples using the specified sampler.
 sampler = samplers.Euler_Maruyama_sampler  # @param ['Euler_Maruyama_sampler', 'pc_sampler', 'ode_sampler'] {'type': 'raw'}

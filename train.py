@@ -1,3 +1,5 @@
+from models import ncsnv2
+
 import torch.nn as nn
 import numpy as np
 import torch
@@ -9,6 +11,8 @@ import tqdm
 import functools
 
 import option as op
+
+ncsnv2.
 
 # Defining a time-dependent score-based model
 class GaussianFourierProjection(nn.Module):  ##### time t를 embading 해줌
@@ -183,9 +187,12 @@ def loss_fn(model, x, marginal_prob_std, eps=1e-5):
 
 
 marginal_prob_std_fn = functools.partial(marginal_prob_std, sigma=op.sigma)
-# Training
-score_model = torch.nn.DataParallel(ScoreNet(marginal_prob_std=marginal_prob_std_fn))
-score_model = score_model.to(op.device)
+#E# Training
+#score_model = torch.nn.DataParallel(ScoreNet(marginal_prob_std=marginal_prob_std_fn))
+#score_model = score_model.to(op.device)
+
+score_model = ncsnv2.NCSNv2Deeper(op.color_channel, op.device).to(op.device)
+score_model = torch.nn.DataParallel(score_model)
 
 dataset = MNIST('.', train=True, transform=transforms.ToTensor(), download=True)
 data_loader = DataLoader(dataset, batch_size=op.batch_size, shuffle=True, num_workers=0)

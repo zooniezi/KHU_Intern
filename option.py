@@ -1,7 +1,7 @@
 # Image Option
-img_height = 28
-img_width = 28
-color_channel = 1
+img_height = 128
+img_width = 128
+color_channel = 3
 
 # Kenrel Option
 knl_standard_deviation = 1
